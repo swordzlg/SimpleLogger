@@ -16,32 +16,32 @@ const int kLogMaxBufSize = 1024 * 4;
 
 #define LOG_DEBUG(format, ...) do { \
 	wchar_t buf[kLogMaxBufSize] = {0}; \
-	swprintf_s(buf, format, ##__VA_ARGS__); \
-	CSimpleLogger::Instance().WriteLog(buf, CSimpleLogger::Debug); \
+	swprintf_s(buf, L" [DEBUG] " format, ##__VA_ARGS__); \
+	CSimpleLogger::Instance().WriteLog(buf); \
 }while (0);
 
 #define LOG_INFO(format, ...) do { \
 	wchar_t buf[kLogMaxBufSize] = {0}; \
-	swprintf_s(buf, format, ##__VA_ARGS__); \
-	CSimpleLogger::Instance().WriteLog(buf, CSimpleLogger::Info); \
+	swprintf_s(buf, L" [INFO] " format, ##__VA_ARGS__); \
+	CSimpleLogger::Instance().WriteLog(buf); \
 }while (0);
 
 #define LOG_WARN(format, ...) do { \
 	wchar_t buf[kLogMaxBufSize] = {0}; \
-	swprintf_s(buf, format, ##__VA_ARGS__); \
-	CSimpleLogger::Instance().WriteLog(buf, CSimpleLogger::Warn); \
+	swprintf_s(buf, L" [WARN] " format, ##__VA_ARGS__); \
+	CSimpleLogger::Instance().WriteLog(buf); \
 }while (0);
 
 #define LOG_ERROR(format, ...) do { \
 	wchar_t buf[kLogMaxBufSize] = {0}; \
-	swprintf_s(buf, format, ##__VA_ARGS__); \
-	CSimpleLogger::Instance().WriteLog(buf, CSimpleLogger::Error); \
+	swprintf_s(buf, L" [ERROR] " format, ##__VA_ARGS__); \
+	CSimpleLogger::Instance().WriteLog(buf); \
 }while (0);
 
 #define LOG_FATAL(format, ...) do { \
 	wchar_t buf[kLogMaxBufSize] = {0}; \
-	swprintf_s(buf, format, ##__VA_ARGS__); \
-	CSimpleLogger::Instance().WriteLog(buf, CSimpleLogger::Fatal); \
+	swprintf_s(buf, L" [FATAL] " format, ##__VA_ARGS__); \
+	CSimpleLogger::Instance().WriteLog(buf); \
 }while (0);
 
 struct LogConfig
@@ -54,16 +54,6 @@ struct LogConfig
 class CSimpleLogger
 {
 public:
-	enum LogLevel
-	{
-		Debug,
-		Info,
-		Warn,
-		Error,
-		Fatal,
-	};
-
-public:
 	static CSimpleLogger& Instance()
 	{
 		static CSimpleLogger instance;
@@ -73,7 +63,7 @@ public:
 
 	// ≥ı ºªØ…Ë÷√
 	void InitLogger(const LogConfig &logCfg);
-	void WriteLog(const wstring &wstrData, LogLevel logLv);
+	void WriteLog(const wstring &wstrData);
 
 private:
 	CSimpleLogger();
