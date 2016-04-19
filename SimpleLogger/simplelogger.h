@@ -7,13 +7,41 @@
 using std::wstring;
 using std::wofstream;
 
+#define BEGIN_NAMESPACE_SLOG namespace slog {
+#define END_NAMESPACE_SLOG };
+
+BEGIN_NAMESPACE_SLOG
+
 const int kLogMaxBufSize = 1024 * 4;
 
-//snwprintf(buf, kLogMaxBufSize, format, ##__VA_ARGS__);
-#define LOG(format, ...) do { \
+#define LOG_DEBUG(format, ...) do { \
 	wchar_t buf[kLogMaxBufSize] = {0}; \
 	swprintf_s(buf, format, ##__VA_ARGS__); \
-	CSimpleLogger::Instance().WriteLog(buf); \
+	CSimpleLogger::Instance().WriteLog(buf, CSimpleLogger::Debug); \
+}while (0);
+
+#define LOG_INFO(format, ...) do { \
+	wchar_t buf[kLogMaxBufSize] = {0}; \
+	swprintf_s(buf, format, ##__VA_ARGS__); \
+	CSimpleLogger::Instance().WriteLog(buf, CSimpleLogger::Info); \
+}while (0);
+
+#define LOG_WARN(format, ...) do { \
+	wchar_t buf[kLogMaxBufSize] = {0}; \
+	swprintf_s(buf, format, ##__VA_ARGS__); \
+	CSimpleLogger::Instance().WriteLog(buf, CSimpleLogger::Warn); \
+}while (0);
+
+#define LOG_ERROR(format, ...) do { \
+	wchar_t buf[kLogMaxBufSize] = {0}; \
+	swprintf_s(buf, format, ##__VA_ARGS__); \
+	CSimpleLogger::Instance().WriteLog(buf, CSimpleLogger::Error); \
+}while (0);
+
+#define LOG_FATAL(format, ...) do { \
+	wchar_t buf[kLogMaxBufSize] = {0}; \
+	swprintf_s(buf, format, ##__VA_ARGS__); \
+	CSimpleLogger::Instance().WriteLog(buf, CSimpleLogger::Fatal); \
 }while (0);
 
 struct LogConfig
@@ -26,6 +54,16 @@ struct LogConfig
 class CSimpleLogger
 {
 public:
+	enum LogLevel
+	{
+		Debug,
+		Info,
+		Warn,
+		Error,
+		Fatal,
+	};
+
+public:
 	static CSimpleLogger& Instance()
 	{
 		static CSimpleLogger instance;
@@ -35,7 +73,7 @@ public:
 
 	// ≥ı ºªØ…Ë÷√
 	void InitLogger(const LogConfig &logCfg);
-	void WriteLog(const wstring &wstrData);
+	void WriteLog(const wstring &wstrData, LogLevel logLv);
 
 private:
 	CSimpleLogger();
@@ -50,3 +88,5 @@ private:
 	LogConfig m_logConfig;
 	wofstream m_outStream;
 };
+
+END_NAMESPACE_SLOG

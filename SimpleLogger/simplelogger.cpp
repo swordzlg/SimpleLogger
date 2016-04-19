@@ -1,5 +1,6 @@
 #include "simplelogger.h"
 
+BEGIN_NAMESPACE_SLOG
 
 CSimpleLogger::CSimpleLogger()
 {
@@ -27,9 +28,33 @@ void CSimpleLogger::InitLogger(const LogConfig &logCfg)
 	m_outStream.open(m_logConfig.wstrOutFile.c_str(), openMode);
 }
 
-void CSimpleLogger::WriteLog(const wstring &wstrData)
+void CSimpleLogger::WriteLog(const wstring &wstrData, LogLevel logLv)
 {
-	m_outStream << wstrData;
+	SYSTEMTIME time;
+	::GetLocalTime(&time);
+
+	m_outStream << time.wYear << L'-' << time.wMonth << L'-' << time.wDay << L" " <<
+		time.wHour << L':' << time.wMinute << L':' << time.wSecond;
+	switch (logLv)
+	{
+	case Debug:
+		m_outStream << " [DEBUG] ";
+		break;
+	case Info:
+		m_outStream << " [INFO] ";
+		break;
+	case Warn:
+		m_outStream << " [WARN] ";
+		break;
+	case Error:
+		m_outStream << " [ERROR] ";
+		break;
+	case Fatal:
+		m_outStream << " [FATAL] ";
+		break;
+	}
+
+	m_outStream << wstrData << std::endl;
 }
 
 //
@@ -89,3 +114,5 @@ int CSimpleLogger::CheckLogFileSize()
 	}
 	return m_logConfig.nFileSizeLimit;
 }
+
+END_NAMESPACE_SLOG
