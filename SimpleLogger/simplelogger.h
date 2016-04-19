@@ -16,12 +16,12 @@ const int kLogMaxBufSize = 1024 * 4;
 	CSimpleLogger::Instance().WriteLog(buf); \
 }while (0);
 
-typedef struct _LogConfig
+struct LogConfig
 {
 	wstring wstrOutFile;
 	bool bOverwrite;
-	int nFileLimitSize;		// log文件大小限制（字节）
-}LogConfig;
+	int nFileSizeLimit;		// log文件大小限制（字节）
+};
 
 class CSimpleLogger
 {
@@ -31,6 +31,7 @@ public:
 		static CSimpleLogger instance;
 		return instance;
 	}
+	~CSimpleLogger();
 
 	// 初始化设置
 	void InitLogger(const LogConfig &logCfg);
@@ -38,7 +39,14 @@ public:
 
 private:
 	CSimpleLogger();
-	~CSimpleLogger();
+	CSimpleLogger(CSimpleLogger&);
+	void operator = (CSimpleLogger&);
+
+	int GetLogFileSize();
+	int CheckLogFileSize();
+
+private:
+	static const int kLogFileMaxSize = 1024 * 1024 * 100;
 	LogConfig m_logConfig;
 	wofstream m_outStream;
 };
